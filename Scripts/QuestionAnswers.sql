@@ -1,3 +1,9 @@
+SELECT * FROM data_analyst_jobs
+
+
+
+
+
 --1.	How many rows are in the data_analyst_jobs table?
 
 SELECT COUNT(*)
@@ -26,7 +32,7 @@ LIMIT 10
 
 SELECT COUNT(*)
 FROM data_analyst_jobs
-WHERE data_analyst_jobs.location='TN'
+WHERE location='TN'
 
 --Answer 3a     21 jobs in TN
 
@@ -37,7 +43,7 @@ WHERE data_analyst_jobs.location='TN'
 
 SELECT COUNT(*)
 FROM data_analyst_jobs
-WHERE data_analyst_jobs.location IN ('TN','KY')
+WHERE location IN ('TN','KY')
 
 --Answer 3b		27 jobs total in TN and KY combined
 
@@ -47,11 +53,12 @@ WHERE data_analyst_jobs.location IN ('TN','KY')
 
 --4.	How many postings in Tennessee have a star rating above 4?
 
-SELECT COUNT(*)
+SELECT *
 FROM data_analyst_jobs
 WHERE star_rating >4
+AND location = 'TN'
 
---Answer    416 total posting for TN where star rating is above 4
+--Answer    3 total posting for TN where star rating is above 4
 
 
 
@@ -62,7 +69,8 @@ WHERE star_rating >4
 
 SELECT COUNT(*)
 FROM data_analyst_jobs
-WHERE review_count BETWEEN 500  AND 1000
+WHERE review_count 
+BETWEEN 500  AND 1000
 
 --Answer	total of 151 records where reviews are between 500-10000
 
@@ -83,11 +91,13 @@ ORDER BY avg_rating DESC
 
 
 
-
 --7.	Select unique job titles from the data_analyst_jobs table. How many are there?
 
-SELECT COUNT(DISTINCT(title)) AS unique_title
+SELECT COUNT(title) AS title_count 
+		, title
 FROM data_analyst_jobs
+GROUP BY title
+ORDER BY title_count DESC 
 
 --Answer    total of 881 Unique title showing
 
@@ -106,14 +116,58 @@ WHERE data_analyst_jobs.location = 'CA'
 
 
 
+
+
 --9.	Find the name of each company and its average star rating for all companies that have more than 5000 reviews across all locations. How many companies are there with more that 5000 reviews across all locations?
 
-SELECT 
+SELECT company
+	,	ROUND(AVG(star_rating), 2) AS avg_star_rating
+FROM data_analyst_jobs
+WHERE review_count>5000
+AND company IS NOT NULL
+GROUP BY company
+
+
+---Answer     22 companies have more than 5000 reviews across all locations
 
 
 
 
 
+--10.	Add the code to order the query in #9 from highest to lowest average star rating. Which company with more than 5000 reviews across all locations in the dataset has the highest star rating? What is that rating?
 
+SELECT company, star_rating,
+		AVG(star_rating) AS avg_star_rating
+FROM data_analyst_jobs
+WHERE review_count>5000
+GROUP BY company, star_rating
+ORDER BY avg_star_rating DESC
+
+--Answer    there are 6 companies with same avg_star_rating. General Motors shows up at top with 4.1999998090000000
+
+
+
+
+
+--11.	Find all the job titles that contain the word ‘Analyst’. How many different job titles are there? 
+
+SELECT COUNT(DISTINCT(title)) AS title_count
+FROM data_analyst_jobs
+WHERE title LIKE '%Analyst%'
+
+--Answer	754 is the title_count where title contains 'Analyst'
+
+
+
+
+
+--12.	How many different job titles do not contain either the word ‘Analyst’ or the word ‘Analytics’? What word do these positions have in common?
+
+SELECT title
+FROM data_analyst_jobs
+WHERE title NOT LIKE '%Analyst%'
+AND title NOT LIKE '%Analytics%'
+
+---Answer    There are total of 39 jobs that doesn't include the word 'Analyst' and 'Analytics'. most common word in the 39 jobs is 'ANALYST' in UPPER case.
 
 
